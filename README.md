@@ -17,7 +17,7 @@ and [opacus](https://github.com/pytorch/opacus).
 
 You can install all requirements with:
 ```bash
-pip install -r example-requirements.txt
+pip install -r requirements.txt
 ```
 
 The code was tested with `python 3.7`, `torch 1.6` and `CUDA 10.1`.
