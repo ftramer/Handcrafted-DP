@@ -25,14 +25,11 @@ The code was tested with `python 3.7`, `torch 1.6` and `CUDA 10.1`.
 
 ## Example Usage and Results
 
-This table presents the main results from our paper, which can be reproduced with 
-the commands listed below. For each dataset, we target a privacy budget of `(epsilon=3, delta=1e-5)`.
+This table presents the main results from our paper. For each dataset, we target a privacy budget of `(epsilon=3, delta=1e-5)`.
 We compare three types of models: 
-1) Regular CNNs trained "end-to-end" from image pixels
-2) Linear models fine-tuned on top of "ScatterNet" features. 
-The [Scattering Network](https://arxiv.org/abs/1412.8659) comutes a feature 
-representation based on *fixed wavelet features*, and does thus not degrade the 
-privacy of the training data.
+1) Regular CNNs trained "end-to-end" from image pixels.
+2) Linear models fine-tuned on top of "handcrafted"
+[ScatterNet](https://arxiv.org/abs/1412.8659) features.
 3) Small CNNs fine-tuned on ScatterNet features. 
 
 | Dataset  | End-to-end CNN | ScatterNet + linear | ScatterNet + CNN |
@@ -47,12 +44,12 @@ privacy of the training data.
 The [DP-SGD](https://arxiv.org/abs/1607.00133) algorithm adds noise 
 to every gradient update to preserve privacy.
 The "noise multiplier" is a parameter that determines the amount of noise 
-to be added. 
+that is added. 
 The higher the noise multiplier, the stronger the privacy guarantees, 
 but the harder it is to train accurate models.
 
 In our paper, we compute the noise multiplier so that our fixed privacy budget
-of `(epsilon=3, delta=1e-5)` is consumed after some `T`epochs.
+of `(epsilon=3, delta=1e-5)` is consumed after some fixed number of epochs.
 The noise multiplier can be computed as:
 ```python
 from dp_utils import get_noise_mul
@@ -104,7 +101,7 @@ When using Batch Normalization, we *compose* the privacy losses of the
 normalization step and of the DP-SGD algorithm.
 Specifically, we first compute the Rényi-DP budget for the normalization step, 
 and then compute the `noise_multiplier` of the DP-SGD algorithm so that the total
-privacy budget is used after `T` epochs:
+privacy budget is used after a fixed number of epochs:
 ```python
 from dp_utils import get_renyi_divergence, get_noise_mul
 rdp = 2 * get_renyi_divergence(1, bn_noise_multiplier)
@@ -116,13 +113,9 @@ noise_mul = get_noise_mul(num_samples, batch_size, target_epsilon, epochs, rdp_i
 To understand how expensive it currently is to exceed handcrafted features 
 with private end-to-end deep learning, we compare the performance of the 
 above models on increasingly large training sets.
-As the training set increases, DP-SGD requires less noise to achieve a target 
-privacy budget, and so the performance of end-to-end learning should increase as well 
-(lowering the noise also helps the ScatterNet models, but these cannot match 
-end-to-end models in the non-private case).
 
 To obtain a larger dataset comparable to CIFAR-10, we use `500'000` additional
-pseudo-labelled tiny images collected by [Carmon et al.](https://github.com/yaircarmon/semisup-adv).
+pseudo-labelled tiny images collected by [Carmon et al.](https://github.com/yaircarmon/semisup-adv)
 
 To re-train the above models for `120` epochs on the full dataset of `550'000` images, use:
 
@@ -140,14 +133,11 @@ N| End-to-end CNN | ScatterNet + linear | ScatterNet + CNN |
 | 50K  | 59.2%  | 67.0% | **69.3%**
 |550K |  **75.8%** | 70.7% | 74.5% |
 
-Thus, with about one order of magnitude more data, private end-to-end CNNs 
-narrowly outperform handcrafted features.
-
 ### Private Transfer Learning
-Our paper also contains some results for private transfer learning to CIFAR-10:
-When targeting a privacy budget of `(epsilon=2, delta=1e-5)` we get:
+Our paper also contains some results for private transfer learning to CIFAR-10.
+For a privacy budget of `(epsilon=2, delta=1e-5)` we get:
 
- Source Model  | Transfer Accuracy |
+ Source Model  | Transfer Accuracy on CIFAR-10 |
 | ------------- | ------------- | 
 | ResNeXt-29 (CIFAR-100) | 79.6%  | 
 | SIMCLR v2 (unlabelled ImageNet) | 92.4%  | 
