@@ -7,7 +7,7 @@ These models are introduced and analyzed in:
 
 *Differentially Private Learning Needs Better Features (Or Much More Data)*</br>
 **Florian Tramèr and Dan Boneh**</br>
-[arXiv:2012.XXXXX](http://arxiv.org/abs/2012.XXXXX)
+[arXiv:2011.11660](http://arxiv.org/abs/2011.11660)
 
 ## Installation
 
