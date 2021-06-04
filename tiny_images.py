@@ -118,8 +118,7 @@ def main(tiny_images=None, model="cnn", augment=False, use_scattering=False,
 
     privacy_engine = PrivacyEngine(
         model,
-        bs,
-        data_size,
+        sample_rate=bs / data_size,
         alphas=ORDERS,
         noise_multiplier=noise_multiplier,
         max_grad_norm=max_grad_norm,
