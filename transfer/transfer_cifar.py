@@ -38,8 +38,13 @@ def main(feature_path=None, batch_size=2048, mini_batch_size=256,
     test_loader = torch.utils.data.DataLoader(testset, batch_size=mini_batch_size, shuffle=False, num_workers=1, pin_memory=True)
 
     n_features = x_train.shape[-1]
-    mean = np.zeros(n_features, dtype=np.float32)
-    var = np.ones(n_features, dtype=np.float32)
+    try:
+        mean = np.load(f"{feature_path}_mean.npy")
+        var = np.load(f"{feature_path}_var.npy")
+    except FileNotFoundError:
+        mean = np.zeros(n_features, dtype=np.float32)
+        var = np.ones(n_features, dtype=np.float32)
+
     bn_stats = (torch.from_numpy(mean).to(device), torch.from_numpy(var).to(device))
 
     model = nn.Sequential(StandardizeLayer(bn_stats), nn.Linear(n_features, 10)).to(device)
