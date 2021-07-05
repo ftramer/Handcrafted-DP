@@ -130,6 +130,5 @@ dmypy.json
 
 
 figures/
-scripts/
 .DS_STORE
 .idea/
