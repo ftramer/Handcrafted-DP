@@ -150,7 +150,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_groups', type=int, default=81)
     parser.add_argument('--bn_noise_multiplier', type=float, default=6)
     parser.add_argument('--max_epsilon', type=float, default=None)
-    parser.add_argument('--early_stop', type=bool, default=True)
+    parser.add_argument("--early_stop", action="store_false")
     parser.add_argument('--sample_batches', action="store_true")
     parser.add_argument('--logdir', default=None)
     args = parser.parse_args()
